@@ -1,7 +1,7 @@
 # bash-powerline-ng
 
 Powerline for Bash in pure Bash script. 
-Forked from https://github.com/z4ziggy/bash-powerline-ng
+Forked from https://github.com/riobard/bash-powerline
 
 
 ![bash-powerline-ng](https://raw.github.com/z4ziggy/bash-powerline-ng/master/screenshots/terminal1.png)
