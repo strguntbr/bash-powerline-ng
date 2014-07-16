@@ -1,9 +1,11 @@
-# bash-powerline
+# bash-powerline-ng
 
 Powerline for Bash in pure Bash script. 
+Forked from https://github.com/z4ziggy/bash-powerline-ng
 
-![bash-powerline](https://raw.github.com/riobard/bash-powerline/master/screenshots/solarized-light-source-code-pro.png)
-![bash-powerline](https://raw.github.com/riobard/bash-powerline/master/screenshots/solarized-dark-monaco.png)
+
+![bash-powerline-ng](https://raw.github.com/z4ziggy/bash-powerline-ng/master/screenshots/terminal1.png)
+![bash-powerline-ng](https://raw.github.com/z4ziggy/bash-powerline-ng/master/screenshots/terminal2.png)
 
 ## Features
 
@@ -22,11 +24,11 @@ Powerline for Bash in pure Bash script.
 
 Download the Bash script
 
-    curl https://raw.github.com/riobard/bash-powerline/master/bash-powerline.sh > ~/.bash-powerline.sh
+    wget -O ~/.bash-powerline-ng.sh https://raw.github.com/z4ziggy/bash-powerline-ng/master/bash-powerline-ng.sh
 
 And source it in your `.bashrc`
 
-    source ~/.bash-powerline.sh
+    source ~/.bash-powerline-ng.sh
 
 For best result, use [Solarized
 colorscheme](https://github.com/altercation/solarized) for your terminal
@@ -51,6 +53,7 @@ non-retina screens. I'd rather stick with existing unicode symbols in the fonts.
 
 
 ## See also
+* [bash-powerline](https://github.com/riobard/bash-powerline) Original bash-powerline
 * [powerline](https://github.com/Lokaltog/powerline): Unified Powerline
   written in Python. This is the future of all Powerline derivatives. 
 * [vim-powerline](https://github.com/Lokaltog/vim-powerline): Powerline in Vim

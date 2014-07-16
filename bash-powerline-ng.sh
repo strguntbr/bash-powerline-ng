@@ -6,7 +6,6 @@ __powerline() {
     readonly PS_SYMBOL_DARWIN=''
     readonly PS_SYMBOL_LINUX='$'
     readonly PS_SYMBOL_OTHER='%'
-    readonly GIT_BRANCH_SYMBOL='⑂ '
     readonly GIT_BRANCH_CHANGED_SYMBOL='+'
     readonly GIT_NEED_PUSH_SYMBOL='⇡'
     readonly GIT_NEED_PULL_SYMBOL='⇣'
@@ -53,6 +52,25 @@ __powerline() {
     readonly RESET="\[$(tput sgr0)\]"
     readonly BOLD="\[$(tput bold)\]"
 
+    readonly FG_COLOR1="\[\e[38;5;250m\]"
+    readonly BG_COLOR1="\[\e[48;5;240m\]"
+    readonly FG_COLOR2="\[\e[38;5;240m\]"
+    readonly BG_COLOR2="\[\e[48;5;238m\]"
+    readonly FG_COLOR3="\[\e[38;5;250m\]"
+    readonly BG_COLOR3="\[\e[48;5;238m\]"
+    readonly FG_COLOR4="\[\e[38;5;238m\]"
+    readonly BG_COLOR4="\[\e[48;5;31m\]"
+    readonly FG_COLOR5="\[\e[38;5;15m\]"
+    readonly BG_COLOR5="\[\e[48;5;31m\]"
+    readonly FG_COLOR6="\[\e[38;5;31m\]"
+    readonly BG_COLOR6="\[\e[48;5;237m\]"
+    readonly FG_COLOR7="\[\e[38;5;250m\]"
+    readonly BG_COLOR7="\[\e[48;5;237m\]"
+    readonly FG_COLOR8="\[\e[38;5;237m\]"
+    readonly BG_COLOR8="\[\e[48;5;161m\]"
+    readonly FG_COLOR9="\[\e[38;5;161m\]"
+    readonly BG_COLOR9="\[\e[48;5;161m\]"
+
     # what OS?
     case "$(uname)" in
         Darwin)
@@ -67,15 +85,13 @@ __powerline() {
 
     __git_info() { 
         [ -x "$(which git)" ] || return    # git not found
+	[ -d .git ] || return              # no .git directory
 
         # get current branch name or short SHA1 hash for detached head
         local branch="$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --always 2>/dev/null)"
         [ -n "$branch" ] || return  # git branch not found
 
         local marks
-
-        # branch is modified?
-        [ -n "$(git status --porcelain)" ] && marks+=" $GIT_BRANCH_CHANGED_SYMBOL"
 
         # how many commits local branch is ahead/behind of remote?
         local stat="$(git status --porcelain --branch | grep '^##' | grep -o '\[.\+\]$')"
@@ -85,7 +101,12 @@ __powerline() {
         [ -n "$behindN" ] && marks+=" $GIT_NEED_PULL_SYMBOL$behindN"
 
         # print the git branch segment without a trailing newline
-        printf " $GIT_BRANCH_SYMBOL$branch$marks "
+	# branch is modified?
+	if [ -n "$(git status --porcelain)" ]; then
+		printf "${BG_COLOR8}$RESET$BG_COLOR8 $branch$marks $FG_COLOR9"
+	else
+		printf "${BG_BLUE}$RESET$BG_BLUE $branch$marks $RESET$FG_BLUE"
+	fi
     }
 
     ps1() {
@@ -93,13 +114,18 @@ __powerline() {
         # colors in the prompt accordingly. 
         if [ $? -eq 0 ]; then
             local BG_EXIT="$BG_GREEN"
+	    local FG_EXIT="$FG_GREEN"
         else
             local BG_EXIT="$BG_RED"
+	    local FG_EXIT="$FG_RED"
         fi
 
-        PS1="$BG_BASE1$FG_BASE3 \w $RESET"
-        PS1+="$BG_BLUE$FG_BASE3$(__git_info)$RESET"
-        PS1+="$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET "
+	PS1="$FG_COLOR1$BG_COLOR1 \u $FG_COLOR2$BG_COLOR2$FG_COLOR3$BG_COLOR3 \h $FG_COLOR4$BG_COLOR4$FG_COLOR5$BG_COLOR5 \w "
+	PS1+="$RESET${FG_COLOR6}"
+	PS1+="$(__git_info)"
+        PS1+="$BG_EXIT$RESET"
+        PS1+="$BG_EXIT$FG_BASE3 ${PS_SYMBOL} ${RESET}${FG_EXIT}${RESET} "
+
     }
 
     PROMPT_COMMAND=ps1
