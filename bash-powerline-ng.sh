@@ -4,7 +4,7 @@ __powerline() {
 
     # Unicode symbols
     readonly PS_SYMBOL_DARWIN=''
-    readonly PS_SYMBOL_LINUX='$'
+    readonly PS_SYMBOL_LINUX='\$'
     readonly PS_SYMBOL_OTHER='%'
     readonly GIT_BRANCH_CHANGED_SYMBOL='+'
     readonly GIT_NEED_PUSH_SYMBOL='⇡'
@@ -119,8 +119,13 @@ __powerline() {
             local BG_EXIT="$BG_RED"
 	    local FG_EXIT="$FG_RED"
         fi
+	if [ $(id -u) -eq 0 ]; then
+		PS1="$FG_COLOR1$BG_RED \u $FG_RED"
+	else
+		PS1="$FG_COLOR1$BG_COLOR1 \u $FG_COLOR2"
+	fi
 
-	PS1="$FG_COLOR1$BG_COLOR1 \u $FG_COLOR2$BG_COLOR2$FG_COLOR3$BG_COLOR3 \h $FG_COLOR4$BG_COLOR4$FG_COLOR5$BG_COLOR5 \w "
+	PS1+="$BG_COLOR2$FG_COLOR3$BG_COLOR3 \h $FG_COLOR4$BG_COLOR4$FG_COLOR5$BG_COLOR5 \w "
 	PS1+="$RESET${FG_COLOR6}"
 	PS1+="$(__git_info)"
         PS1+="$BG_EXIT$RESET"
