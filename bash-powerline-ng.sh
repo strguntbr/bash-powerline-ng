@@ -82,6 +82,22 @@ __powerline() {
         *)
             readonly PS_SYMBOL=$PS_SYMBOL_OTHER
     esac
+    
+    # what Server?
+    case "$(hostname)" in
+	zbuild)
+		readonly BG_HOSTNAME="$BG_GREEN"
+		readonly FG_HOSTNAME="$FG_GREEN"
+		;;
+	zeus)
+		readonly BG_HOSTNAME="$BG_RED"
+		readonly FG_HOSTNAME="$FG_RED"
+		;;
+	*)
+		readonly BG_HOSTNAME="$BG_COLOR3"
+		readonly FG_HOSTNAME="$FG_COLOR4"
+		;;
+    esac
 
     __git_info() { 
         [ -x "$(which git)" ] || return    # git not found
@@ -124,8 +140,9 @@ __powerline() {
 	else
 		PS1="$FG_COLOR1$BG_COLOR1 \u $FG_COLOR2"
 	fi
+	
 
-	PS1+="$BG_COLOR2$FG_COLOR3$BG_COLOR3 \h $FG_COLOR4$BG_COLOR4$FG_COLOR5$BG_COLOR5 \w "
+	PS1+="$BG_HOSTNAME$FG_COLOR3$BG_HOSTNAME$BOLD \h $RESET$FG_HOSTNAME$BG_COLOR4$FG_COLOR5$BG_COLOR5 \w "
 	PS1+="$RESET${FG_COLOR6}"
 	PS1+="$(__git_info)"
         PS1+="$BG_EXIT$RESET"
