@@ -24,7 +24,7 @@ Forked from https://github.com/riobard/bash-powerline
 
 Download the Bash script
 
-    wget -O ~/.bash-powerline-ng.sh https://raw.github.com/z4ziggy/bash-powerline-ng/master/bash-powerline-ng.sh
+    wget -O ~/.bash-powerline-ng.sh https://raw.github.com/strguntbr/bash-powerline-ng/master/bash-powerline-ng.sh
 
 And source it in your `.bashrc`
 
