@@ -37,6 +37,7 @@ __powerline() {
     readonly FG_BLUE="\[$(tput setaf 4)\]"
     readonly FG_CYAN="\[$(tput setaf 6)\]"
     readonly FG_GREEN="\[$(tput setaf 2)\]"
+    readonly FG_GRAY="\[\e[38;5;240m\]"
 
     readonly BG_YELLOW="\[$(tput setab 3)\]"
     readonly BG_ORANGE="\[$(tput setab 9)\]"
@@ -46,6 +47,7 @@ __powerline() {
     readonly BG_BLUE="\[$(tput setab 4)\]"
     readonly BG_CYAN="\[$(tput setab 6)\]"
     readonly BG_GREEN="\[$(tput setab 2)\]"
+    readonly BG_GRAY="\[\e[48;5;240m\]"
 
     readonly DIM="\[$(tput dim)\]"
     readonly REVERSE="\[$(tput rev)\]"
@@ -107,6 +109,13 @@ __powerline() {
         local branch="$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --always 2>/dev/null)"
         [ -n "$branch" ] || return  # git branch not found
 
+        df . -Tl &> /dev/null
+        if [ $? -ne 0 ]; then
+            # we are not on a local filesytem so git status will be painfully slow, thus we will skip detailed git info
+            printf "${BG_GRAY}$RESET${BG_GRAY} $branch $RESET${FG_GRAY}"
+            return
+        fi
+
         local marks
 
         # how many commits local branch is ahead/behind of remote?
@@ -135,15 +144,33 @@ __powerline() {
             local BG_EXIT="$BG_RED"
 	    local FG_EXIT="$FG_RED"
         fi
+
+        df . -Tl &> /dev/null
+        if [ $? -eq 0 ]; then
+            # we are on a local (fast) filesystem
+            local BG_DIR="$BG_COLOR4"
+            local FG_DIR="$FG_COLOR6"
+        else
+            # we are not on a local (slow) filesystem
+            local BG_DIR="$BG_ORANGE"
+            local FG_DIR="$FG_ORANGE"
+        fi
+
 	if [ $(id -u) -eq 0 ]; then
 		PS1="$FG_COLOR1$BG_RED \u $FG_RED"
 	else
 		PS1="$FG_COLOR1$BG_COLOR1 \u $FG_COLOR2"
 	fi
+
+        if [ -n "$POWERLINE_HOSTNAME_OVERRIDE" ]; then
+            local POWERLINE_HOSTNAME="$POWERLINE_HOSTNAME_OVERRIDE"
+        else
+            local POWERLINE_HOSTNAME="\h"
+        fi
 	
 
-	PS1+="$BG_HOSTNAME$FG_COLOR3$BG_HOSTNAME$BOLD \h $RESET$FG_HOSTNAME$BG_COLOR4$FG_COLOR5$BG_COLOR5 \w "
-	PS1+="$RESET${FG_COLOR6}"
+	PS1+="$BG_HOSTNAME$FG_COLOR3$BG_HOSTNAME$BOLD $POWERLINE_HOSTNAME $RESET$FG_HOSTNAME$BG_DIR$FG_COLOR5$BG_DIR \w "
+	PS1+="$RESET${FG_DIR}"
 	PS1+="$(__git_info)"
         PS1+="$BG_EXIT$RESET"
         PS1+="$BG_EXIT$FG_BASE3 ${PS_SYMBOL} ${RESET}${FG_EXIT}${RESET} "
