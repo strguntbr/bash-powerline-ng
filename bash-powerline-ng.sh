@@ -38,6 +38,7 @@ __powerline() {
     readonly FG_CYAN="\[$(tput setaf 6)\]"
     readonly FG_GREEN="\[$(tput setaf 2)\]"
     readonly FG_GRAY="\[\e[38;5;240m\]"
+    readonly FG_DARK_RED="\[\e[38;5;52m\]"
 
     readonly BG_YELLOW="\[$(tput setab 3)\]"
     readonly BG_ORANGE="\[$(tput setab 9)\]"
@@ -48,6 +49,7 @@ __powerline() {
     readonly BG_CYAN="\[$(tput setab 6)\]"
     readonly BG_GREEN="\[$(tput setab 2)\]"
     readonly BG_GRAY="\[\e[48;5;240m\]"
+    readonly BG_DARK_RED="\[\e[48;5;52m\]"
 
     readonly DIM="\[$(tput dim)\]"
     readonly REVERSE="\[$(tput rev)\]"
@@ -136,13 +138,12 @@ __powerline() {
 
     ps1() {
         # Check the exit code of the previous command and display different
-        # colors in the prompt accordingly. 
-        if [ $? -eq 0 ]; then
-            local BG_EXIT="$BG_GREEN"
-	    local FG_EXIT="$FG_GREEN"
+        # colors in the prompt accordingly.
+        LAST_STATUS=$?	
+        if [ $LAST_STATUS -eq 0 ]; then
+            local STATUS_INFO="$RESET "
         else
-            local BG_EXIT="$BG_RED"
-	    local FG_EXIT="$FG_RED"
+            local STATUS_INFO="$BG_DARK_RED$RESET$BG_DARK_RED$FG_BASE3 $LAST_STATUS $RESET$FG_DARK_RED$RESET "
         fi
 
         df . -Tl &> /dev/null
@@ -172,8 +173,7 @@ __powerline() {
 	PS1+="$BG_HOSTNAME$FG_COLOR3$BG_HOSTNAME$BOLD $POWERLINE_HOSTNAME $RESET$FG_HOSTNAME$BG_DIR$FG_COLOR5$BG_DIR \w "
 	PS1+="$RESET${FG_DIR}"
 	PS1+="$(__git_info)"
-        PS1+="$BG_EXIT$RESET"
-        PS1+="$BG_EXIT$FG_BASE3 ${PS_SYMBOL} ${RESET}${FG_EXIT}${RESET} "
+        PS1+="$STATUS_INFO"
 
     }
 
